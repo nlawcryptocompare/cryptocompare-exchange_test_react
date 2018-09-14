@@ -1,0 +1,25 @@
+:root{
+  --offBlack: #252525;
+  --darkBlue: #090538;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.App-header {
+    background-color: var(--darkBlue);
+    padding: 1rem;
+    color: white;
+}
+
+.App-title {
+    font-size: 1.5em;
+}
+
+.App-body {
+    margin-top: 3rem;
+    padding: 1rem;
+}
