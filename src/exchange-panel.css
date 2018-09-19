@@ -1,0 +1,40 @@
+.ExchangePanel-table{
+    margin-top: 4rem;
+    width: 100%;
+    border: 1px solid var(--darkBlue);
+}
+
+.ExchangePanel-table tr:nth-child(even){
+    background: var(--lightGrey);
+}
+
+.ExchangePanel-table tr td{
+    padding: 1rem;
+    vertical-align: top;
+}
+
+.ExchangePanel-table tr th{
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--darkBlue);
+}
+
+.updated{
+    animation-name: stretch;
+    animation-duration: 0.2s; 
+    animation-timing-function: ease-out; 
+    animation-delay: 0s;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: none;
+    animation-play-state: running; 
+}
+
+@keyframes stretch {
+    0% {
+      background-color: inherit;
+    }
+    100% {
+      background-color: #ccc;
+    }
+}

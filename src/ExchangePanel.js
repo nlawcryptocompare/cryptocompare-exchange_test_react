@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { subscribeToExchange } from './api';
+import { unsubscribeFromExchange } from './api';
+import './exchange-panel.css';
 
 class ExchangePanel extends Component {
     constructor(props) {
@@ -10,7 +12,13 @@ class ExchangePanel extends Component {
             exhchangeData: [],
         };
 
-        subscribeToExchange((dataStreamEntry) => {
+        this.unsub = () => {
+            console.log('Unsubscribing....');
+
+            unsubscribeFromExchange();
+        };
+
+        this.sub = subscribeToExchange((dataStreamEntry) => {
             // Set active exchange
             if (this.state.activeExchange !== dataStreamEntry.MARKET) {
                 this.setState({ activeExchange: dataStreamEntry.MARKET });
@@ -28,7 +36,7 @@ class ExchangePanel extends Component {
                 // If a pair already exists, update it
 
                 // Clone array out of state
-                const newExchangeData = this.state.exhchangeData.slice(0);
+                let newExchangeData = this.state.exhchangeData.slice(0);
 
                 // Get index of pair to update
                 const pairIdx = newExchangeData.indexOf(trackedPair);
@@ -38,18 +46,24 @@ class ExchangePanel extends Component {
                     newExchangeData[pairIdx][thisKey] = dataStreamEntry[thisKey];
                 });
 
+                newExchangeData[pairIdx].updated = 'updated';
+
                 // Once all keys have been updated, save array back into state
                 this.setState({ exhchangeData: newExchangeData });
+
+                setTimeout(() => {
+                    newExchangeData[pairIdx].updated = '';
+                }, 0);
             }
         });
     }
 
     render() {
         return (
-            <div>
+            <div className="container">
                 <h2>Exchange Transactions ({ this.state.activeExchange })</h2>
 
-                <table>
+                <table className="ExchangePanel-table" cellPadding="0" cellSpacing="0">
                     <tbody>
                         <tr>
                             <th>Market</th>
@@ -61,7 +75,7 @@ class ExchangePanel extends Component {
                         </tr>
                         {this.state.exhchangeData.map((item, idx) => {
                             return (
-                                <tr key={idx}>
+                                <tr key={idx} className={item.updated}>
                                     <td>{ item.FROMSYMBOL }/{ item.TOSYMBOL }</td>
                                     <td>{ item.PRICE } { item.TOSYMBOL }</td>
                                     <td>{ item.OPEN24HOUR }</td>
@@ -73,10 +87,9 @@ class ExchangePanel extends Component {
                                     <td>
                                         Last Volume: { item.LASTVOLUME }
                                         <br />
-                                        Last Trade ID: { item.TRADEID }
+                                        Last Trade ID: { item.LASTTRADEID }
                                         <br />
-                                        {/* Last Time: { new Date(item.LASTUPDATE * 1000) } */}
-                                        <br />
+                                        Last Time: { JSON.stringify(new Date(item.LASTUPDATE * 1000)) }
                                     </td>
                                     <td>{ item.VOLUME24HOUR } { item.FROMSYMBOL }</td>
                                 </tr>

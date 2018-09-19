@@ -1,21 +1,24 @@
 import openSocket from 'socket.io-client';
 import cccCurrent from 'ccc-current';
 
-const socket = openSocket('https://streamer.cryptocompare.com/');
-
-var subscription = ['5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD', '11~BTC', '11~ETH'];
-	socket.emit('SubAdd', { subs: subscription });
+const socket = openSocket('http://localhost:6969/streamers');
 
 const subscribeToExchange = (callback) => {
     socket.on('connect', () => {
         console.log('connected!');
     });
 
-    socket.on('m', (data) => {
-        const unpackedData = cccCurrent.unpack(data);
+    socket.on('2', (currentData) => {
+        const unpackedData = cccCurrent.unpack(`2~${currentData}`);
+
+        console.log(unpackedData)
         
         callback(unpackedData);
     });
 };
 
-export { subscribeToExchange };
+const unsubscribeFromExchange = () => {
+    socket.disconnect();
+};
+
+export { subscribeToExchange, unsubscribeFromExchange };
